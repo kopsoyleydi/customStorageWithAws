@@ -31,14 +31,11 @@ public class S3Service {
 				.bucket(bucketName)
 				.key(key)
 				.build();
-
 		ResponseInputStream<GetObjectResponse> res = s3.getObject(getObjectRequest);
-
 		try {
 			return res.readAllBytes();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
 	}
 }

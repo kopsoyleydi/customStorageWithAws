@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 @RequestMapping("home/")
 public class MainController {
 
-	private static Logger logger = Logger.getLogger(MainController.class.getName());
+	private static final Logger logger = Logger.getLogger(MainController.class.getName());
 	@Autowired
 	private S3Service s3Service;
 
@@ -25,13 +25,13 @@ public class MainController {
 	String arr = "";
 
 	@PostMapping("/upload")
-	public void putFile(@RequestBody MultipartFile file){
+	public void putFile(@RequestBody MultipartFile file, Long userId){
 			String profileImageId = UUID.randomUUID().toString();
 			arr = profileImageId;
 			try {
 				s3Service.putObject(
 						"bekscloud",
-						"profile-images/%s".formatted(profileImageId),
+						"profile-images/%s/%s".formatted(userId,profileImageId),
 						file.getBytes()
 				);
 				logger.info("success");
@@ -43,6 +43,7 @@ public class MainController {
 	@GetMapping("/getfile")
 	public byte[] getFileFromAws(){
 		try {
+			logger.info("Success");
 			return s3Service.getObject("bekscloud", "profile-images/%s".formatted(arr));
 		}
 		catch (Exception e){

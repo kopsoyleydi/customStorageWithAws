@@ -3,10 +3,10 @@ package com.example.demo.restControllers;
 
 import com.example.demo.bucket.S3Bucket;
 import com.example.demo.bucket.S3Service;
+import com.example.demo.model.User;
 import com.example.demo.repo.UserRepository;
 import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

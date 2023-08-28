@@ -7,6 +7,7 @@ import com.example.demo.bucket.S3Service;
 import com.example.demo.model.User;
 import com.example.demo.repo.UserRepository;
 import com.example.demo.services.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,14 +36,18 @@ public class MainController {
 	private UserRepository userRepository;
 
 	@PostMapping("/upload")
+	@Transactional
 	public void putFile(@RequestBody MultipartFile multipartFile, Long userId){
 			String profileImageId = UUID.randomUUID().toString();
+			User user = new User();
 			try {
 				s3Service.putObject(
 						"bekscloud",
 						"profile-images/%s/%s".formatted(userId,profileImageId),
 						multipartFile.getBytes()
 				);
+				user.setCustomerImageId(profileImageId);
+				userRepository.save(user);
 				logger.info("success");
 			} catch (IOException e) {
 				throw new RuntimeException("failed to upload profile image", e);
@@ -50,10 +55,15 @@ public class MainController {
 	}
 
 	@GetMapping("/getfile")
-	public byte[] getFileFromAws() throws IOException{
+	public byte[] getFileFromAws(@RequestParam Long userId) throws IOException{
 		try {
+			User user = userRepository.findAllById(userId);
 			logger.info("Success");
-			byte[] ImageBytes = s3Service.getObject("bekscloud", "profile-images/%s/".formatted(1));
+			byte[] ImageBytes =
+					s3Service.getObject(
+							"bekscloud", "profile-images/%s/%s"
+									.formatted(user.getId(),
+											user.getCustomerImageId()));
 			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(ImageBytes).getBody();
 		}
 		catch (Exception e){

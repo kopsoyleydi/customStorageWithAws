@@ -1,12 +1,15 @@
 package com.example.demo.restControllers;
 
 
+import com.example.demo.body.Upload;
 import com.example.demo.bucket.S3Bucket;
 import com.example.demo.bucket.S3Service;
 import com.example.demo.model.User;
 import com.example.demo.repo.UserRepository;
 import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,16 +32,16 @@ public class MainController {
 	private UserService userService;
 
 	@Autowired
-			private UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@PostMapping("/upload")
-	public void putFile(@RequestBody MultipartFile file, Long userId){
+	public void putFile(@RequestBody MultipartFile multipartFile, Long userId){
 			String profileImageId = UUID.randomUUID().toString();
 			try {
 				s3Service.putObject(
 						"bekscloud",
 						"profile-images/%s/%s".formatted(userId,profileImageId),
-						file.getBytes()
+						multipartFile.getBytes()
 				);
 				logger.info("success");
 			} catch (IOException e) {
@@ -47,11 +50,11 @@ public class MainController {
 	}
 
 	@GetMapping("/getfile")
-	public byte[] getFileFromAws(){
+	public byte[] getFileFromAws() throws IOException{
 		try {
-			User sessionUser = userService.getCurrentSessionUser();
 			logger.info("Success");
-			return s3Service.getObject("bekscloud", "profile-images/%s".formatted());
+			byte[] ImageBytes = s3Service.getObject("bekscloud", "profile-images/%s/".formatted(1));
+			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(ImageBytes).getBody();
 		}
 		catch (Exception e){
 			e.printStackTrace();

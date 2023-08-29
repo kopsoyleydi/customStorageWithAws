@@ -71,4 +71,9 @@ public class MainController {
 		}
 		return null;
 	}
+
+	@GetMapping(value = "/getProfile")
+	public User getProfile(){
+		return userService.getCurrentSessionUser();
+	}
 }

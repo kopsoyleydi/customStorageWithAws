@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,7 +47,7 @@ public class MainController {
 						"profile-images/%s/%s".formatted(userId,profileImageId),
 						multipartFile.getBytes()
 				);
-				user.setCustomerImageId(profileImageId);
+				user.setImgLink(profileImageId);
 				userRepository.save(user);
 				logger.info("success");
 			} catch (IOException e) {
@@ -63,7 +64,7 @@ public class MainController {
 					s3Service.getObject(
 							"bekscloud", "profile-images/%s/%s"
 									.formatted(user.getId(),
-											user.getCustomerImageId()));
+											user.getImgLink()));
 			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(ImageBytes).getBody();
 		}
 		catch (Exception e){
@@ -83,6 +84,12 @@ public class MainController {
 						   @RequestParam(name = "user_repeat_password") String repeatPassword,
 						   @RequestParam(name = "user_full_name") String fullName) {
 		return userService.signUpService(email,password,repeatPassword,fullName);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping(value = "/getCurrentUser/{id}")
+	public User getCurrentSessionUser(@PathVariable(name = "id") Long id){
+		return userService.getUserById(id);
 	}
 
 }

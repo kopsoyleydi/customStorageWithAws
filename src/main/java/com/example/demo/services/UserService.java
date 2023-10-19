@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -22,6 +23,9 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private RoleRepository roleRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 
 	public User getCurrentSessionUser() {
@@ -41,17 +45,22 @@ public class UserService implements UserDetailsService {
 		}
 	}
 
-	public User addUser(User user){
-		return userRepository.save(user);
+	public User addUser(User user) {
+		User checkUser = userRepository.findByEmail(user.getEmail());
+		if (checkUser == null) {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			return userRepository.save(user);
+		}
+		return null;
 	}
 
 	public String signUpService(String email, String password, String repeatPassword, String name) {
 		if (password.equals(repeatPassword)) {
 			User user = new User();
 			user.setEmail(email);
-			user.setName(name);
+			user.setFullName(name);
 			user.setPassword(password);
-			user.setUserRole(roleRepository.findAllById(1L));
+			user.setPermissions(roleRepository.findAllById(1L));
 			User newUser = addUser(user);
 			if (newUser != null) {
 				return "redirect:/sign-up-page?success";
@@ -61,5 +70,9 @@ public class UserService implements UserDetailsService {
 		} else {
 			return "redirect:/sign-up-page?passworderror";
 		}
+	}
+
+	public User getUserById(Long id){
+		return userRepository.findAllById(id);
 	}
 }

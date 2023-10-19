@@ -19,7 +19,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("home/")
+@RequestMapping("/")
 public class MainController {
 
 	private static final Logger logger = Logger.getLogger(MainController.class.getName());
@@ -76,4 +76,13 @@ public class MainController {
 	public User getProfile(){
 		return userService.getCurrentSessionUser();
 	}
+
+	@PostMapping(value = "/to-sign-up")
+	public String toSignUp(@RequestParam(name = "user_email") String email,
+						   @RequestParam(name = "user_password") String password,
+						   @RequestParam(name = "user_repeat_password") String repeatPassword,
+						   @RequestParam(name = "user_full_name") String fullName) {
+		return userService.signUpService(email,password,repeatPassword,fullName);
+	}
+
 }

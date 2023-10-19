@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
-	@GetMapping(value = "sign-in-page")
+	@GetMapping(value = "/sign-in-page")
 	public String signInPage(){
 		return "sign-in";
 	}
 
-	@GetMapping(value = "profile")
+	@GetMapping(value = "/profile")
 	public String profilePage(){
 		return "profile";
 	}
@@ -25,5 +25,10 @@ public class PageController {
 	@GetMapping(value = "/sign-up-page")
 	public String signupPage() {
 		return "signup";
+	}
+
+	@GetMapping(value = "/")
+	public String main(){
+		return "index";
 	}
 }

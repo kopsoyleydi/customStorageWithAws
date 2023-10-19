@@ -16,11 +16,14 @@ public class User {
 
 	private String email;
 
+	private String password;
+
 	private String name;
 
 	private String surname;
 
 	private String customerImageId;
 
-
+	@ManyToOne
+	Role userRole;
 }

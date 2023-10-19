@@ -21,4 +21,9 @@ public class PageController {
 	public String error403(){
 		return "403page";
 	}
+
+	@GetMapping(value = "/sign-up-page")
+	public String signupPage() {
+		return "signup";
+	}
 }

@@ -3,6 +3,72 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout.html"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div layout:fragment="content">
+    <main>
+        <section class="py-5 text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-6 col-md-8 mx-auto">
+                    <h1 class="fw-light">Kino.kz</h1>
+                    <p class="lead text-body-secondary">
+                        Добро пожаловать на наш сайт для покупки
+                        билетов на мероприятия покупайте билет и ваш
+                        билет будет отправлен на вашу электронную почту.
+                    </p>
+                    <p>
+                    </p>
+                </div>
+            </div>
+        </section>
+        <div class="album py-5 bg-body-tertiary">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-4 row-cols-md-3 g-3" id="carouselWithEvents">
 
+                </div>
+            </div>
+        </div>
+    </main>
+    <script type="text/javascript">
+
+        loadEvents();
+
+        function loadEvents() {
+
+            const httpRequest = new XMLHttpRequest();
+            httpRequest.open("GET", "http://localhost:8000/events/getAllActivityEvents", true);
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200) {
+
+                    let courseList = JSON.parse(httpRequest.responseText);
+
+                    let tableContent = "";
+                    for (let i = 0; i < courseList.length; i++) {
+                        tableContent += "<div class=\"col\">";
+                        tableContent += "<div class=\"card shadow-sm\">";
+                        tableContent += "<img class=\"bd-placeholder-img card-img-top\" width=\"65%\" height=\"385\"" +
+                            " src='" + courseList[i].pictureLink + "'>";
+                        tableContent += "<div class=\"card-body\">";
+                        tableContent += "<p class=\"card-text\">" + courseList[i].author
+                            + "</p>";
+                        tableContent += "<div class=\"d-flex justify-content-between align-items-center\">\n" +
+                            "                                    <div class=\"btn-group\">\n" +
+                            "                                        <button type=\"button\"" +
+                            " class=\"btn btn-sm btn-outline-secondary\">\n";
+                        tableContent += "<a href='http://localhost:8000/getEvent/" + courseList[i].id + "'>View</a>"
+                        tableContent +=
+                            "</button>";
+                        tableContent +=
+                            "                                    </div>\n" +
+                            "                                </div>";
+                        tableContent += "</div>\n" +
+                            "                        </div>\n" +
+                            "                    </div>";
+
+                    }
+                    document.getElementById("carouselWithEvents").innerHTML = tableContent;
+                }
+            }
+            httpRequest.send();
+        }
+
+    </script>
 </div>
 </html>

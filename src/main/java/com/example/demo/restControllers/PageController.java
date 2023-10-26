@@ -12,6 +12,11 @@ public class PageController {
 		return "sign-in";
 	}
 
+	@GetMapping(value = "/update-password-page")
+	public String updatePasswordPage(){
+		return "update_password";
+	}
+
 	@GetMapping(value = "/profile")
 	public String profilePage(){
 		return "profile";

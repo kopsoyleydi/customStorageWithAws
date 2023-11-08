@@ -22,7 +22,7 @@ public class PageController {
 		return "profile";
 	}
 
-	@GetMapping(value = "403")
+	@GetMapping(value = "/403")
 	public String error403(){
 		return "403page";
 	}

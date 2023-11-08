@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -40,11 +41,11 @@ public class MainController {
 	@Transactional
 	public void putFile(@RequestBody MultipartFile multipartFile, Long userId){
 			String profileImageId = UUID.randomUUID().toString();
-			User user = new User();
+			User user = userRepository.findAllById(userId);
 			try {
 				s3Service.putObject(
 						"bekscloud",
-						"profile-images/%s/%s".formatted(userId,profileImageId),
+						"profile-images/%s/%s".formatted(user.getId(),profileImageId),
 						multipartFile.getBytes()
 				);
 				user.setImgLink(profileImageId);
@@ -59,13 +60,17 @@ public class MainController {
 	public byte[] getFileFromAws(@RequestParam Long userId) throws IOException{
 		try {
 			User user = userRepository.findAllById(userId);
-			logger.info("Success");
-			byte[] ImageBytes =
-					s3Service.getObject(
-							"bekscloud", "profile-images/%s/%s"
-									.formatted(user.getId(),
-											user.getImgLink()));
-			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(ImageBytes).getBody();
+			if(user.getImgLink() == null){
+				logger.info("Success");
+				byte[] ImageBytes =
+						s3Service.getObject(
+								"bekscloud", "profile-images/%s/%s"
+										.formatted(user.getId(),
+												user.getImgLink()));
+				return ResponseEntity.ok()
+						.contentType(MediaType.IMAGE_JPEG).body(ImageBytes).getBody();
+			}
+			return "You may only update".getBytes();
 		}
 		catch (Exception e){
 			e.printStackTrace();

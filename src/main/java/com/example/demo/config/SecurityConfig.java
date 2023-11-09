@@ -29,7 +29,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-		http.exceptionHandling().accessDeniedPage("/403-page");
+		http.exceptionHandling().accessDeniedPage("/403page");
 
 		AuthenticationManagerBuilder builder =
 				http.getSharedObject(AuthenticationManagerBuilder.class);

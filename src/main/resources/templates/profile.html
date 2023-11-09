@@ -126,7 +126,7 @@
                             if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200) {
                                 let responseData = JSON.parse(httpRequest.responseText);
                                 balance.value = responseData.balance;
-                                nameUser.value = responseData.name;
+                                nameUser.value = responseData.fullName;
                                 username.value = responseData.email;
                                 image.src = responseData.imgLink;
                             }

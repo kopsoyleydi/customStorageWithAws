@@ -5,7 +5,6 @@ import com.example.demo.bucket.S3Service;
 import com.example.demo.model.User;
 import com.example.demo.repo.UserRepository;
 import com.example.demo.services.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,14 +18,14 @@ import java.util.logging.Logger;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:8080", maxAge = 200000)
+@RequestMapping(value = "/files")
 public class RestControllerHome {
 
     private static final Logger logger = Logger.getLogger(MainController.class.getName());
     @Autowired
     private S3Service s3Service;
 
-    @Autowired
-    private S3Bucket s3Buckets;
 
     @Autowired
     private UserService userService;
@@ -35,7 +34,6 @@ public class RestControllerHome {
     private UserRepository userRepository;
 
     @PostMapping("/upload")
-    @Transactional
     public void putFile(@RequestBody MultipartFile multipartFile, Long userId){
         String profileImageId = UUID.randomUUID().toString();
         User user = userRepository.findAllById(userId);

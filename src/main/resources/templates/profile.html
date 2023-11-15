@@ -96,7 +96,7 @@
                                         </div>
                                         <div class="row mt-0 mb-2">
                                             <div class="col-11 ms-3">
-                                                <input type="file" id="newImage" class="form-control">
+                                                <input type="file" id="imageInput" class="form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -104,27 +104,29 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
                                         </button>
-                                        <script>
 
-                                            function setImg() {
-                                                const httpRequest = new XMLHttpRequest();
-                                                httpRequest.open("POST", "http://localhost:8000/files/upload", true);
-                                                let userID = document.getElementById("userId");
-                                                var file = document.getElementById("newImage");
-                                                var fileTODB = new FormData();
-                                                fileTODB.append('image', file);
-                                                fileTODB.append('userId', userID);
-                                                httpRequest.onreadystatechange = function () {
-                                                    if (httpRequest.readyState === XMLHttpRequest.DONE && httpRequest.status === 200) {
-                                                        loadImageFromDB();
-                                                        alert("Image uploaded successfully.");
-                                                    }
-                                                };
-                                                httpRequest.send(fileTODB);
-                                            }
-                                        </script>
-                                        <button class="btn btn-success" onclick="setImg()">Update avatar</button>
+                                        <button class="btn btn-success" id="uploadButton">Update avatar</button>
                                     </div>
+
+                                    <script>
+
+                                    function setImg() {
+                                        const httpRequest = new XMLHttpRequest();
+                                        httpRequest.open("POST", "http://localhost:8000/files/upload", true);
+                                        let userID = document.getElementById("userId");
+                                        var file = document.getElementById("newImage");
+                                        var fileTODB = new FormData();
+                                        fileTODB.append('image', file);
+                                        fileTODB.append('userId', userID);
+                                        httpRequest.onreadystatechange = function () {
+                                            if (httpRequest.readyState === XMLHttpRequest.DONE && httpRequest.status === 200) {
+                                                loadImageFromDB();
+                                                alert("Image uploaded successfully.");
+                                            }
+                                        };
+                                        httpRequest.send(fileTODB);
+                                    }
+                                </script>
                                 </div>
                             </div>
                         </div>
@@ -151,11 +153,10 @@
                         httpRequest.send();
                     }
 
-                    loadImageFromDB();
                     function loadImageFromDB(){
                         const httpRequest = new XMLHttpRequest();
                         let userId = document.getElementById('userId');
-                        httpRequest.open("GET", "http://localhost:8080/getfile" + userId.value, true);
+                        httpRequest.open("GET", "http://localhost:8080/getfile/" + 6, true);
                         httpRequest.responseType = 'arraybuffer';
                         let image = document.getElementById("image");
                         httpRequest.onreadystatechange = function () {
@@ -174,5 +175,6 @@
             </div>
         </div>
     </main>
+    <script src="js/profile.js"></script>
 </div>
 </html>

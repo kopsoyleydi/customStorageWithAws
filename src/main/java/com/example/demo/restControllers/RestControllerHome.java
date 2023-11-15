@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:8080", maxAge = 200000)
 @RequestMapping(value = "/files")
 public class RestControllerHome {
 
